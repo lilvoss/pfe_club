@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/backgroundImage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:adjustViewBounds="true"
+        android:src="@drawable/purple_rec"
+        android:layout_marginTop="40dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginLeft="50dp"
+        app:layout_constraintHeight_percent="0.4"
+       />
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/logo_min"
+        android:adjustViewBounds="true"
+        app:layout_constraintStart_toStartOf="@+id/backgroundImage"
+        app:layout_constraintEnd_toEndOf="@+id/backgroundImage"
+        app:layout_constraintTop_toTopOf="@+id/backgroundImage"
+        app:layout_constraintBottom_toBottomOf="@+id/backgroundImage"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintVertical_bias="0.5"
+        android:layout_marginRight="100dp"
+        android:layout_marginLeft="100dp"/>
+
+
+    <TextView
+        android:id="@+id/text1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/backgroundImage"
+        android:text="Compléter votre profil"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:textSize="25dp"
+        android:textColor="@color/purple"
+        />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/Prenom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Prénom"
+        android:textColorHint="@color/gris_clair"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:paddingTop="10dp"
+        app:errorEnabled="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text1">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/prenom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/Nom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nom"
+        android:textColorHint="@color/gris_clair"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:paddingTop="5dp"
+        app:errorEnabled="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Prenom">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/nom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/age"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Age"
+        android:textColorHint="@color/gris_clair"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:paddingTop="5dp"
+        app:errorEnabled="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Nom">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/Age"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <LinearLayout
+        android:id="@+id/linear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/age"
+        android:weightSum="3">
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/age">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Vous êtes"
+                android:textSize="15dp"
+                android:paddingRight="50dp"
+                android:textColor="@color/gris_clair"/>
+
+            <RadioButton
+                android:id="@+id/radio_homme"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Homme"
+                android:paddingRight="50dp"
+                android:buttonTint="@color/radio_button_color"
+                android:textColor="@color/purple"/>
+
+            <RadioButton
+                android:id="@+id/radio_femme"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Femme"
+                android:buttonTint="@color/radio_button_color"
+                android:textColor="@color/purple"/>
+
+        </RadioGroup>
+
+
+
+    </LinearLayout>
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linear"
+        android:layout_marginLeft="40dp"
+        app:cardCornerRadius="25dp"
+        android:layout_marginRight="40dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- LinearLayout avec CheckBox et TextView -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="5">
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="left"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Activer l’abonnement"
+                android:textColor="@color/purple"
+                android:textSize="20dp" />  <!-- Remarquez l'unité de taille de texte (sp) -->
+        </LinearLayout>
+
+        <!-- Dernier TextView sous le LinearLayout -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="15 jours gratuits puis 0.350 TND/jour\n à partir de votre solde téléphonique"
+            android:textSize="16dp"
+            android:paddingTop="10dp"
+        android:textColor="@color/grey"
+        android:layout_marginTop="8dp"/>  <!-- Espacement au-dessus du texte -->
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
+
+
+
+
+    <Button
+        android:id="@+id/signup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/card"
+        android:layout_marginTop="10dp"
+        android:text="Terminer"
+        android:layout_marginRight="80dp"
+        android:layout_marginLeft="80dp"
+        android:textColor="@color/purple"
+        android:background="@drawable/button_border"/>
+
+
+
+
+
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>

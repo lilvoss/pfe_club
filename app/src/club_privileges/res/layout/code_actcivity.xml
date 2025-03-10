@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <ImageView
+        android:id="@+id/backgroundImage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:src="@drawable/purple_rec"
+        android:layout_marginRight="50dp"
+        android:layout_marginLeft="50dp"/>
+
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/backgroundImage"
+        android:layout_marginTop="100dp"
+        android:layout_marginLeft="100dp"
+        android:layout_marginRight="100dp"
+        android:src="@drawable/logo_min"/>
+
+    <TextView
+        android:id="@+id/text1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/backgroundImage"
+        android:text="Entrer le code reçu par\n SMS pour confirmer votre\n inscription"
+        android:textSize="23dp"
+        android:gravity="center"
+        android:textColor="@color/purple"
+        />
+
+    <LinearLayout
+
+        android:id="@+id/code"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/text1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="20dp">
+
+
+        <EditText
+            android:id="@+id/edit_text_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:inputType="number"
+            android:maxLength="1"
+            android:background="@drawable/oval_edittext"
+            android:textSize="20sp"
+            android:layout_margin="8dp"/>
+
+        <EditText
+            android:id="@+id/edit_text_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:inputType="number"
+            android:maxLength="1"
+            android:background="@drawable/oval_edittext"
+            android:textSize="20sp"
+            android:layout_margin="8dp"/>
+
+        <EditText
+            android:id="@+id/edit_text_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:inputType="number"
+            android:maxLength="1"
+            android:background="@drawable/oval_edittext"
+            android:textSize="20sp"
+            android:layout_margin="8dp"/>
+
+        <EditText
+            android:id="@+id/edit_text_4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:inputType="number"
+            android:maxLength="1"
+            android:background="@drawable/oval_edittext"
+            android:textSize="20sp"
+            android:layout_margin="8dp"/>
+    </LinearLayout>
+
+
+    <FrameLayout
+        android:id="@+id/button"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="70dp"
+        app:layout_constraintTop_toBottomOf="@id/code"
+        android:background="@drawable/circular_background">
+
+        <ImageButton
+            android:id="@+id/button_flesh"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/btn_submit"
+            android:scaleType="centerInside"
+            android:layout_gravity="center"/>
+    </FrameLayout>
+
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Réenvoyer le code"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button"
+        android:backgroundTint="@android:color/transparent"
+        android:textSize="15dp"
+        android:textStyle="normal"
+        android:layout_marginTop="50dp"
+        android:textColor="@color/purple"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

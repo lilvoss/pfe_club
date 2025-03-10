@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">pfe_club</string>
+    <string name="copyright">© %1$s BigDeal</string>
+    <string-array name="countries">
+        <item>+216</item>
+        <item>+225</item>
+        <item>+243</item>
+    </string-array>
+</resources>
