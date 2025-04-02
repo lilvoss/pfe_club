@@ -10,8 +10,8 @@ import tn.esprit.module.model.SignUpResponse
 import tn.esprit.module.request.AuthApiService
 
 class SignUpRepository(private val sharedPreferences: SharedPreferences) {
-
     private val apiService: AuthApiService = RetrofitModule.getApiService(sharedPreferences)
+    private val subscriptionRepository = SubscriptionRepository(sharedPreferences)
 
     fun signup(
         clientPrenom: String,
@@ -24,18 +24,18 @@ class SignUpRepository(private val sharedPreferences: SharedPreferences) {
         clientPhoneOs: Int?,
         deviceId: String,
         lang: String,
+        tarifId: Int, // Ajout du tarifId pour l’abonnement
+        shouldSubscribe: Boolean, // Paramètre pour déterminer si l'abonnement doit être fait
         callback: (SignUpResponse?, String?) -> Unit
     ) {
-
         val phone = sharedPreferences.getString("USER_PHONE", "")
 
         if (phone.isNullOrEmpty()) {
-            Log.e("VerifyLoginRepository", "⚠️ ERROR: Phone number is empty!")
-            // Appel du callback avec les deux paramètres attendus
+            Log.e("SignUpRepository", "⚠️ ERROR: Phone number is empty!")
             callback(null, "Phone number is empty!")
             return
         } else {
-            Log.d("VerifyLoginRepository", "📱 Phone number saved: $phone")
+            Log.d("SignUpRepository", "📱 Phone number saved: $phone")
         }
 
         val call = apiService.signup(
@@ -47,7 +47,18 @@ class SignUpRepository(private val sharedPreferences: SharedPreferences) {
         call.enqueue(object : Callback<SignUpResponse> {
             override fun onResponse(call: Call<SignUpResponse>, response: Response<SignUpResponse>) {
                 if (response.isSuccessful) {
-                    callback(response.body(), null)
+                    val signUpResponse = response.body()
+
+                    signUpResponse?.data?.token?.access_token?.let {
+                        saveToken(it)
+                    }
+
+                    // Si shouldSubscribe est true, on demande l'abonnement
+                    if (shouldSubscribe) {
+                        requestSubscription(tarifId)
+                    }
+
+                    callback(signUpResponse, null)
                 } else {
                     callback(null, response.errorBody()?.string())
                 }
@@ -57,5 +68,20 @@ class SignUpRepository(private val sharedPreferences: SharedPreferences) {
                 callback(null, t.message)
             }
         })
+    }
+
+    private fun saveToken(token: String) {
+        sharedPreferences.edit().putString("AUTH_TOKEN", token).apply()
+        Log.d("SignUpRepository", "✅ Token saved successfully: $token")
+    }
+
+    private fun requestSubscription(tarifId: Int) {
+        subscriptionRepository.requestSubscribe(tarifId, "fr") { response, error ->
+            if (response != null) {
+                Log.d("SignUpRepository", "🎉 Abonnement réussi: ${response.message}")
+            } else {
+                Log.e("SignUpRepository", "❌ Échec de l'abonnement: $error")
+            }
+        }
     }
 }

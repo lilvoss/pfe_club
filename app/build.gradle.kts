@@ -36,7 +36,7 @@ android {
         debug {
             isMinifyEnabled = false
 
-            buildConfigField("String", "BASE_URL_1", "\"https://api.clubprivileges.app/api/\"")
+            buildConfigField("String", "BASE_URL_1", "\"https://api-tn.preprod.clubprivileges.app/api/\"")
             buildConfigField("String", "BASE_URL_2", "\"https://api.cd.clubprivileges.app/api/\"")
             buildConfigField("String", "BASE_URL_3", "\"https://api.ci.clubprivileges.app/api/\"")
         }
@@ -61,6 +61,7 @@ android {
     }
     buildFeatures{
         buildConfig = true
+        viewBinding = true
     }
 }
 
@@ -79,6 +80,13 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
     implementation ("com.github.bumptech.glide:glide:4.12.0")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
+
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
+    implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
+    implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+
+    // Coroutines
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
 
 
 

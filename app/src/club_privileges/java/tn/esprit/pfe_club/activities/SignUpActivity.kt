@@ -5,44 +5,55 @@ import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.textfield.TextInputEditText
 import tn.esprit.pfe_club.R
+import tn.esprit.module.Client.RetrofitModule
+import tn.esprit.module.request.AuthApiService
 import tn.esprit.module.viewmodel.SignUpViewModel
-
+import tn.esprit.module.repository.SubscriptionRepository
+import tn.esprit.module.model.SubscribeResponse
+import tn.esprit.module.model.SignUpResponse
 class SignUpActivity : AppCompatActivity() {
 
     private lateinit var prenomEditText: TextInputEditText
     private lateinit var nomEditText: TextInputEditText
     private lateinit var ageEditText: TextInputEditText
     private lateinit var signupButton: Button
-    private lateinit var viewModel: SignUpViewModel
+    private lateinit var subscribeCheckbox: CheckBox // Ajout du CheckBox
+
+    private lateinit var signUpViewModel: SignUpViewModel
+    private lateinit var subscriptionRepository: SubscriptionRepository
     private lateinit var sharedPreferences: SharedPreferences
+
+    private val fixedTarifId: Int = 10
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.signup_screen)
 
-        // Récupération des vues et configuration des écouteurs de focus
-        prenomEditText = findViewById<TextInputEditText>(R.id.prenom).apply {
-            setFocusChangeListener(this)
-        }
-        nomEditText = findViewById<TextInputEditText>(R.id.nom).apply {
-            setFocusChangeListener(this)
-        }
-        ageEditText = findViewById<TextInputEditText>(R.id.Age).apply {
-            setFocusChangeListener(this)
-        }
-        signupButton = findViewById<Button>(R.id.signup)
+        initViews()
+        initDependencies()
+        setupButtons()
+    }
 
-        // Instanciation du ViewModel avec SharedPreferences
-         sharedPreferences = getSharedPreferences("AppPreferences", MODE_PRIVATE)
-        viewModel = ViewModelProvider(this, object : ViewModelProvider.Factory {
+    private fun initViews() {
+        prenomEditText = findViewById(R.id.prenom)
+        nomEditText = findViewById(R.id.nom)
+        ageEditText = findViewById(R.id.Age)
+        signupButton = findViewById(R.id.signup)
+        subscribeCheckbox = findViewById(R.id.subscribe_checkbox) // Initialiser le CheckBox
+    }
+
+    private fun initDependencies() {
+        sharedPreferences = getSharedPreferences("AppPreferences", MODE_PRIVATE)
+
+        signUpViewModel = ViewModelProvider(this, object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 if (modelClass.isAssignableFrom(SignUpViewModel::class.java)) {
                     return SignUpViewModel(sharedPreferences) as T
@@ -51,70 +62,88 @@ class SignUpActivity : AppCompatActivity() {
             }
         }).get(SignUpViewModel::class.java)
 
-        // Observation des LiveData pour gérer la réponse ou les erreurs
-        viewModel.signUpResponse.observe(this, Observer { response ->
-            response?.let {
-                Toast.makeText(this, "Inscription réussie : ${it.message}", Toast.LENGTH_LONG).show()
+        subscriptionRepository = SubscriptionRepository(sharedPreferences)
+    }
 
-                // Rediriger vers HomeActivity après une inscription réussie
-                val intent = Intent(this, HomeActivity::class.java)
-                startActivity(intent)
-                finish()  // Cette ligne ferme SignUpActivity pour ne pas revenir en arrière
-            }
-        })
-
-
-        viewModel.errorMessage.observe(this, Observer { error ->
-            error?.let {
-                Toast.makeText(this, "Erreur lors de l'inscription : $it", Toast.LENGTH_LONG).show()
-            }
-        })
-
-        // Clic sur le bouton d'inscription
+    private fun setupButtons() {
         signupButton.setOnClickListener {
-            val prenom = prenomEditText.text.toString().trim()
-            val nom = nomEditText.text.toString().trim()
-            val age = ageEditText.text.toString().toIntOrNull()
+            if (validateSignUpInputs()) {
+                // Déterminer si l'abonnement doit être effectué
+                val shouldSubscribe = subscribeCheckbox.isChecked
 
-            if (prenom.isEmpty() || nom.isEmpty() || age == null) {
-                Toast.makeText(this, "Veuillez remplir tous les champs", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
+                // Appeler la méthode d'inscription en fonction de l'état du CheckBox
+                signUpViewModel.signup(
+                    clientPrenom = prenomEditText.text.toString().trim(),
+                    clientNom = nomEditText.text.toString().trim(),
+                    clientGender = null,
+                    source = "app",
+                    clientAge = ageEditText.text.toString().toIntOrNull(),
+                    countryId = null,
+                    clientPhoneId = null,
+                    clientPhoneOs = null,
+                    deviceId = "android_device",
+                    lang = "fr",
+                    tarifId = fixedTarifId,
+                    shouldSubscribe = shouldSubscribe // Passer la valeur du CheckBox
+                ) { signUpResponse, error ->
+                    if (signUpResponse != null) {
+                        showToast("Inscription réussie!")
+                        if (shouldSubscribe) {
+                            showToast("Passage à l'abonnement...")
+                           // executeSubscribe()
+                        }
+                    } else {
+                        showToast("Échec de l'inscription : ${error ?: "Erreur inconnue"}")
+                    }
+                }
             }
-
-            // Valeurs par défaut pour les autres paramètres
-            val clientGender: String? = null
-            val source: String? = "app"
-            val countryId: Int? = null
-            val clientPhoneId: String? = null
-            val clientPhoneOs: Int? = null
-            val deviceId = "android_device_id" // à adapter selon vos besoins
-            val lang = "fr"
-
-            // Appel de l'API via le ViewModel
-            viewModel.signup(
-                clientPrenom = prenom,
-                clientNom = nom,
-                clientGender = clientGender,
-                source = source,
-                clientAge = age,
-                countryId = countryId,
-                clientPhoneId = clientPhoneId,
-                clientPhoneOs = clientPhoneOs,
-                deviceId = deviceId,
-                lang = lang
-            )
         }
     }
 
-    // Fonction pour changer la couleur de fond d'un EditText lors de la sélection
+    private fun validateSignUpInputs(): Boolean {
+        val prenom = prenomEditText.text.toString().trim()
+        val nom = nomEditText.text.toString().trim()
+        val age = ageEditText.text.toString().toIntOrNull()
+
+        if (prenom.isEmpty() || nom.isEmpty() || age == null) {
+            showToast("Veuillez remplir tous les champs")
+            return false
+        }
+        return true
+    }
+
+    private fun executeSubscribe() {
+        val updatedRetrofit = RetrofitModule.getRetrofit(sharedPreferences)
+        val updatedApiService = updatedRetrofit.create(AuthApiService::class.java)
+
+        subscriptionRepository.updateApiService(updatedApiService)
+
+        subscriptionRepository.requestSubscribe(fixedTarifId, "fr") { response, error ->
+            if (response != null) {
+                if (response.status) {
+                    showToast("Abonnement réussi!")
+                } else {
+                    showToast(response.message ?: "Abonnement échoué")
+                }
+            } else {
+                showToast("Erreur d'abonnement: ${error ?: "Inconnue"}")
+            }
+        }
+    }
+
+    private fun showToast(message: String) {
+        runOnUiThread {
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+
+
+
     private fun setFocusChangeListener(editText: TextInputEditText) {
         editText.setOnFocusChangeListener { _, hasFocus ->
             val purpleColor = ContextCompat.getColor(this, R.color.purple)
-            if (hasFocus) {
-                editText.setBackgroundColor(purpleColor)
-            } else {
-                editText.setBackgroundColor(Color.TRANSPARENT)
-            }
+            editText.setBackgroundColor(if (hasFocus) purpleColor else Color.TRANSPARENT)
         }
     }
 }

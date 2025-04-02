@@ -17,7 +17,7 @@
         android:layout_marginRight="50dp"
         android:layout_marginLeft="50dp"
         app:layout_constraintHeight_percent="0.4"
-       />
+        />
 
     <ImageView
         android:id="@+id/logo"
@@ -179,41 +179,42 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-        android:padding="16dp">
+            android:padding="16dp">
 
-        <!-- LinearLayout avec CheckBox et TextView -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="5">
+            <!-- LinearLayout avec CheckBox et TextView -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="5">
 
-            <CheckBox
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="left"
-                />
+                <CheckBox
+                    android:id="@+id/subscribe_checkbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="left"
+                    />
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Activer l’abonnement"
+                    android:textColor="@color/purple"
+                    android:textSize="20dp" />  <!-- Remarquez l'unité de taille de texte (sp) -->
+            </LinearLayout>
+
+            <!-- Dernier TextView sous le LinearLayout -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Activer l’abonnement"
-                android:textColor="@color/purple"
-                android:textSize="20dp" />  <!-- Remarquez l'unité de taille de texte (sp) -->
+                android:text="15 jours gratuits puis 0.350 TND/jour\n à partir de votre solde téléphonique"
+                android:textSize="16dp"
+                android:paddingTop="10dp"
+                android:textColor="@color/grey"
+                android:layout_marginTop="8dp"/>  <!-- Espacement au-dessus du texte -->
+
         </LinearLayout>
-
-        <!-- Dernier TextView sous le LinearLayout -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="15 jours gratuits puis 0.350 TND/jour\n à partir de votre solde téléphonique"
-            android:textSize="16dp"
-            android:paddingTop="10dp"
-        android:textColor="@color/grey"
-        android:layout_marginTop="8dp"/>  <!-- Espacement au-dessus du texte -->
-
-    </LinearLayout>
-</androidx.cardview.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
 
 
@@ -239,4 +240,4 @@
 
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

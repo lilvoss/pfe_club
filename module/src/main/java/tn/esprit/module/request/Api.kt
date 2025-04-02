@@ -12,6 +12,7 @@ import retrofit2.http.Query
 import tn.esprit.module.model.AuthStoreResponse
 import tn.esprit.module.model.AuthUserResponse
 import tn.esprit.module.model.SignUpResponse
+import tn.esprit.module.model.SubscribeResponse
 import tn.esprit.module.model.VerifyCodeResponse
 import tn.esprit.module.request.AuthRequest
 
@@ -56,6 +57,13 @@ interface AuthApiService {
         @Header("device-id") deviceId: String,
         @Header("lang") lang: String
     ): Call<SignUpResponse>
+
+
+    @POST("V2.0/request-subscribe")
+    fun subscribe(
+        @Query("tarif_id") tarifId: Int,
+        @Header("lang") lang: String = "fr" // Langue par défaut
+    ): Call<SubscribeResponse>
 
 
 

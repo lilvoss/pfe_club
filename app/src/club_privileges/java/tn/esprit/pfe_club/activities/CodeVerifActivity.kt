@@ -110,7 +110,6 @@ class CodeVerifActivity : AppCompatActivity() {
 
         authUserViewModel.authResponse.observe(this, Observer { response ->
             if (response != null) {
-                // Sauvegarde uniquement le numéro de téléphone
                 sharedPreferences.edit().putString("USER_PHONE", phone).apply()
 
                 when (response.data?.action) {

@@ -17,6 +17,7 @@ class SignUpViewModel(private val sharedPreferences: SharedPreferences) : ViewMo
     private val _errorMessage = MutableLiveData<String?>()
     val errorMessage: LiveData<String?> get() = _errorMessage
 
+    // Ajout du paramètre tarifId
     fun signup(
         clientPrenom: String,
         clientNom: String,
@@ -27,16 +28,23 @@ class SignUpViewModel(private val sharedPreferences: SharedPreferences) : ViewMo
         clientPhoneId: String?,
         clientPhoneOs: Int?,
         deviceId: String,
-        lang: String
+        lang: String,
+        tarifId: Int,
+        shouldSubscribe: Boolean,// Ajout de tarifId
+        callback: (Boolean, String?) -> Unit // Ajout du callback pour signaler la réussite ou l'erreur
     ) {
         repository.signup(
             clientPrenom, clientNom, clientGender, source,
-            clientAge, countryId, clientPhoneId, clientPhoneOs, deviceId, lang
+            clientAge, countryId, clientPhoneId, clientPhoneOs, deviceId, lang,
+            tarifId,
+            shouldSubscribe
         ) { response, error ->
-            if (response != null) {
+            if (response != null && response.status) {
                 _signUpResponse.postValue(response)
+                callback(true, null) // Succès
             } else {
                 _errorMessage.postValue(error)
+                callback(false, error) // Échec
             }
         }
     }
