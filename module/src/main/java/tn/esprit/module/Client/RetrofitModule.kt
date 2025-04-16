@@ -7,10 +7,11 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import tn.esprit.module.request.AuthApiService
+import tn.esprit.module.request.Home_api
 
 object RetrofitModule {
 
-    // Function to get the base URL from SharedPreferences
+
     fun getBaseUrl(sharedPreferences: SharedPreferences): String {
         return sharedPreferences.getString("BASE_URL", "https://api.clubprivileges.app/api/") ?: "https://api.clubprivileges.app/api/"
     }
@@ -55,4 +56,9 @@ object RetrofitModule {
     fun getApiService(sharedPreferences: SharedPreferences): AuthApiService {
         return getRetrofit(sharedPreferences).create(AuthApiService::class.java)
     }
+
+    fun getHomeApiService(sharedPreferences: SharedPreferences): Home_api {
+        return getRetrofit(sharedPreferences).create(Home_api::class.java)
+    }
+
 }

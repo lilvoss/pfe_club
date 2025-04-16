@@ -5,103 +5,77 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.animation.AnimationUtils
+import android.util.Log
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
+import tn.esprit.module.model.VerifyCodeResponse
 import tn.esprit.module.repository.VerifyLoginRepository
 import tn.esprit.module.viewmodel.VerifyLoginViewModel
-import tn.esprit.module.model.AuthUserResponse
-import tn.esprit.module.model.VerifyCodeResponse
 import tn.esprit.pfe_club.R
 
 class CodeActivity : AppCompatActivity() {
 
     private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var verifyLoginViewModel: VerifyLoginViewModel
+    private lateinit var viewModel: VerifyLoginViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.code_actcivity)
 
-        // Initialize SharedPreferences
         sharedPreferences = getSharedPreferences("AppPreferences", MODE_PRIVATE)
+        viewModel = VerifyLoginViewModel(VerifyLoginRepository(sharedPreferences))
 
-        // Initialize ViewModel
-        val repository = VerifyLoginRepository(sharedPreferences)
-        verifyLoginViewModel = VerifyLoginViewModel(repository)
+        val et1 = findViewById<EditText>(R.id.edit_text_1)
+        val et2 = findViewById<EditText>(R.id.edit_text_2)
+        val et3 = findViewById<EditText>(R.id.edit_text_3)
+        val et4 = findViewById<EditText>(R.id.edit_text_4)
+        val btn = findViewById<ImageButton>(R.id.button_flesh)
 
-        val editText1 = findViewById<EditText>(R.id.edit_text_1)
-        val editText2 = findViewById<EditText>(R.id.edit_text_2)
-        val editText3 = findViewById<EditText>(R.id.edit_text_3)
-        val editText4 = findViewById<EditText>(R.id.edit_text_4)
-        val submitButton = findViewById<ImageButton>(R.id.button_flesh)
-
-        // Listen for text changes to move focus automatically
-        setupOtpAutoMove(editText1, editText2)
-        setupOtpAutoMove(editText2, editText3)
-        setupOtpAutoMove(editText3, editText4)
-
-        submitButton.setOnClickListener {
-            val otpCode = "${editText1.text}${editText2.text}${editText3.text}${editText4.text}"
-
-            if (otpCode.length == 4) {
-                verifyLogin(otpCode.toInt())
-            }
-        }
-
-        // Observe ViewModel responses
-        verifyLoginViewModel.loginResponse.observe(this, Observer { response ->
-            handleLoginResponse(response, editText1, editText2, editText3, editText4)
-        })
-    }
-
-    private fun verifyLogin(code: Int) {
-        val phone = 123456789 // Replace with actual phone number
-        val clientPhoneId = "device_id_1234" // Replace with actual device ID
-        val clientPhoneOs = 1 // Example OS value
-        val lang = "fr"
-
-        verifyLoginViewModel.verifyLogin(code, clientPhoneId, clientPhoneOs, lang)
-    }
-
-    private fun handleLoginResponse(response: VerifyCodeResponse?, vararg editTexts: EditText) {
-        if (response != null && response.status == true) {  // Vérification du status
-            // Login réussi, navigation vers HomeActivity
-            val intent = Intent(this, HomeActivity::class.java)
-            startActivity(intent)
-            finish() // Optionnel, pour empêcher de revenir à cette activité
-        } else {
-            // Afficher un message d'erreur (code invalide)
-            showErrorAnimation(*editTexts)
-        }
-    }
-
-
-
-    private fun showErrorAnimation(vararg editTexts: EditText) {
-        // Apply red border to indicate error
-        for (editText in editTexts) {
-            editText.setBackgroundResource(R.drawable.edittext_error_border)
-        }
-
-        // Apply shaking animation
-        val shake = AnimationUtils.loadAnimation(this, R.anim.shake)
-        for (editText in editTexts) {
-            editText.startAnimation(shake)
-        }
-    }
-
-    private fun setupOtpAutoMove(current: EditText, next: EditText) {
-        current.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                if (s?.length == 1) {
-                    next.requestFocus()
+        // Auto‐move OTP
+        listOf(et1 to et2, et2 to et3, et3 to et4).forEach { (cur, nxt) ->
+            cur.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                    if (s?.length == 1) nxt.requestFocus()
                 }
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            })
+        }
+
+        btn.setOnClickListener {
+            val codeStr = et1.text.toString() + et2.text + et3.text + et4.text
+            if (codeStr.length == 4 && codeStr.all { it.isDigit() }) {
+                val code = codeStr.toInt()
+                viewModel.verifyLogin(code, "device_id_1234", 1, "fr") { resp ->
+                    runOnUiThread {
+                        if (resp != null) {
+                            Log.d("CodeActivity", """
+                                🔍 API Response:
+                                • base_url=${resp.base_url}
+                                • status=${resp.status}
+                                • success=${resp.success}
+                                • message=${resp.message}
+                                • client=${resp.data?.client}
+                                • token=${resp.data?.token}
+                            """.trimIndent())
+                            // ← Ici on utilise `status` et non `success`
+                            if (resp.status) {
+                                Toast.makeText(this, "✅ ${resp.message}", Toast.LENGTH_LONG).show()
+                                startActivity(Intent(this, HomeActivity::class.java))
+                                finish()
+                            } else {
+                                Toast.makeText(this, "❌ ${resp.message}", Toast.LENGTH_LONG).show()
+                            }
+                        } else {
+                            Toast.makeText(this, "❌ Erreur réseau ou réponse invalide", Toast.LENGTH_LONG).show()
+                        }
+                    }
+                }
+            } else {
+                Toast.makeText(this, "🔴 Code invalide", Toast.LENGTH_SHORT).show()
             }
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-        })
+        }
     }
 }

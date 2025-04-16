@@ -22,36 +22,33 @@ class SplashScreenActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.splash_layout)
 
-        // Initialisation de SharedPreferences
         sharedPreferences = getSharedPreferences("AppPreferences", MODE_PRIVATE)
-
-        // Enregistrer la base URL dans SharedPreferences
         saveBaseUrlInPreferences()
 
-        // Utilisation de ViewModelProvider avec ViewModelFactory
         val factory = AuthStoreViewModelFactory(sharedPreferences)
         authViewModel = ViewModelProvider(this, factory).get(AuthStoreViewModel::class.java)
 
-        // Observer la réponse d'authentification
+        val email = BuildConfig.STATIC_EMAIL  // Récupère l'email depuis BuildConfig
+        val password = BuildConfig.STATIC_PASSWORD
+
+        // Observer l'authentification
         authViewModel.authResponse.observe(this, Observer { authResponse ->
             if (authResponse != null) {
-                // Si l'authentification est réussie, aller à l'écran principal
                 goToMainScreen()
             } else {
-                // Si l'authentification échoue, afficher un message
                 runOnUiThread {
                     Toast.makeText(this, "Échec de l'authentification", Toast.LENGTH_SHORT).show()
                 }
-                // Ajouter un délai pour rester sur l'écran splash avant de réessayer ou d'aller à l'écran principal
                 Handler().postDelayed({
-                    authViewModel.login()
+                    authViewModel.login(email, password) // 🔥 Passer email et password
                 }, 3000)
             }
         })
 
-        // Lancer la méthode de login
-        authViewModel.login()
+        // Lancer le login avec email et password
+        authViewModel.login(email, password)
     }
+
 
     private fun saveBaseUrlInPreferences() {
         val baseUrl = BuildConfig.BASE_URL_1

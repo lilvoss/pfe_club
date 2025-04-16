@@ -15,6 +15,7 @@ import tn.esprit.pfe_club.adapters.CountryAdapter
 import tn.esprit.pfe_club.model.Country
 import tn.esprit.module.viewmodel.AuthStoreViewModel
 import tn.esprit.module.viewmodel.AuthUserViewModel
+import tn.esprit.pfe_club.BuildConfig
 import tn.esprit.pfe_club.adapters.AuthStoreViewModelFactory
 import tn.esprit.pfe_club.adapters.AuthUserViewModelFactory
 
@@ -70,6 +71,7 @@ class CodeVerifActivity : AppCompatActivity() {
                 selectedBaseUrl = baseUrls.getOrElse(position) { baseUrls[0] }
                 Toast.makeText(this@CodeVerifActivity, "Pays sélectionné: ${countries[position].name}", Toast.LENGTH_SHORT).show()
             }
+
             override fun onNothingSelected(parentView: AdapterView<*>?) {}
         }
 
@@ -77,7 +79,13 @@ class CodeVerifActivity : AppCompatActivity() {
             val phoneNumber = phoneEditText.text.toString().trim()
             if (selectedBaseUrl != null) {
                 updateBaseUrl(selectedBaseUrl!!)
-                authViewModel.login()
+
+                // Récupérer les valeurs de BuildConfig pour l'email et le password
+                val email = BuildConfig.STATIC_EMAIL
+                val password = BuildConfig.STATIC_PASSWORD
+
+                // Passer l'email et le mot de passe au login
+                authViewModel.login(email, password)
 
                 authViewModel.authResponse.observe(this, Observer { authResponse ->
                     if (authResponse != null) {

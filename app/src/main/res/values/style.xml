@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+
+    <style name="BottomNavTextStyleactive" parent="TextAppearance.AppCompat.Caption">
+        <item name="android:textSize">7dp</item>
+        <item name="android:textColor">@color/purple</item>
+    </style>
+
+    <style name="BottomNavLineIndicator" parent="">
+        <item name="android:background">@drawable/nav_active_indicator_line</item>
+        <item name="android:gravity">bottom</item>
+    </style>
+
+
+
+</resources>

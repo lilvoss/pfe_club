@@ -8,15 +8,16 @@ import androidx.lifecycle.ViewModel
 import tn.esprit.module.model.AuthStoreResponse
 import tn.esprit.module.repository.AuthStoreRepository
 
-class AuthStoreViewModel(private val sharedPreferences: SharedPreferences) : ViewModel() {
-    private val repository = AuthStoreRepository(sharedPreferences)
+class AuthStoreViewModel(private val repository: AuthStoreRepository) : ViewModel() {
+
     private val _authResponse = MutableLiveData<AuthStoreResponse?>()
     val authResponse: LiveData<AuthStoreResponse?> get() = _authResponse
 
-    fun login() {
-        repository.login { response ->
+    fun login(email: String, password: String) {
+        repository.login(email, password) { response ->
             _authResponse.postValue(response)
         }
     }
 }
+
 

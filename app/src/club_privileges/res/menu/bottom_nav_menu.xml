@@ -1,0 +1,26 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_nouveau"
+        android:icon="@drawable/home_icon"
+        android:title="Nouveau" />
+
+    <item
+        android:id="@+id/nav_privileges"
+        android:icon="@drawable/privileges_icon"
+        android:title="Privilèges"
+        
+        />
+
+    <item
+        android:id="@+id/nav_scanner"
+        android:icon="@drawable/scan_icon"
+        android:title="Scanner le codea" />
+
+    <item
+        android:id="@+id/nav_pres_de_moi"
+        android:icon="@drawable/tag_icon"
+        android:title="Près de moi" />
+
+
+</menu>
+

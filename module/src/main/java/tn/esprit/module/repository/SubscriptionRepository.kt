@@ -12,7 +12,7 @@ import tn.esprit.module.request.AuthApiService
 class SubscriptionRepository(private val sharedPreferences: SharedPreferences) {
     private var apiService: AuthApiService = RetrofitModule.getApiService(sharedPreferences)
 
-    // Méthode pour mettre à jour le service API
+
     fun updateApiService(newApiService: AuthApiService) {
         this.apiService = newApiService
     }

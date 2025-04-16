@@ -24,8 +24,8 @@ class SignUpRepository(private val sharedPreferences: SharedPreferences) {
         clientPhoneOs: Int?,
         deviceId: String,
         lang: String,
-        tarifId: Int, // Ajout du tarifId pour l’abonnement
-        shouldSubscribe: Boolean, // Paramètre pour déterminer si l'abonnement doit être fait
+        tarifId: Int,
+        shouldSubscribe: Boolean,
         callback: (SignUpResponse?, String?) -> Unit
     ) {
         val phone = sharedPreferences.getString("USER_PHONE", "")
@@ -53,7 +53,7 @@ class SignUpRepository(private val sharedPreferences: SharedPreferences) {
                         saveToken(it)
                     }
 
-                    // Si shouldSubscribe est true, on demande l'abonnement
+
                     if (shouldSubscribe) {
                         requestSubscription(tarifId)
                     }

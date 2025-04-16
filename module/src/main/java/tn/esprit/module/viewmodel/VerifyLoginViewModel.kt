@@ -6,18 +6,23 @@ import androidx.lifecycle.ViewModel
 import tn.esprit.module.model.VerifyCodeResponse
 import tn.esprit.module.repository.VerifyLoginRepository
 
-class VerifyLoginViewModel(private val repository: VerifyLoginRepository) : ViewModel() {
+class VerifyLoginViewModel(
+    private val repository: VerifyLoginRepository
+) : ViewModel() {
+
     private val _loginResponse = MutableLiveData<VerifyCodeResponse?>()
-    val loginResponse: LiveData<VerifyCodeResponse?> get() = _loginResponse
+    val loginResponse: LiveData<VerifyCodeResponse?> = _loginResponse
 
     fun verifyLogin(
-        code: Int,
+        code: Int?,
         clientPhoneId: String,
         clientPhoneOs: Int,
-        lang: String
+        lang: String,
+        callback: (VerifyCodeResponse?) -> Unit
     ) {
         repository.verifyLogin(code, clientPhoneId, clientPhoneOs, lang) { response ->
             _loginResponse.postValue(response)
+            callback(response)
         }
     }
 }

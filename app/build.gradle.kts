@@ -23,6 +23,8 @@ android {
             dimension = "appType"
             applicationIdSuffix = ".club"
             versionNameSuffix = "-club"
+            buildConfigField("String", "STATIC_EMAIL", "\"club@auth.com\"")
+            buildConfigField("String", "STATIC_PASSWORD", "\"auth_club\"")
         }
         create ("gym") {
             dimension = "appType"
@@ -84,9 +86,14 @@ dependencies {
     implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
     implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
     implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+    implementation ("androidx.activity:activity-ktx:1.6.1")  // or the latest version
+    implementation ("androidx.fragment:fragment-ktx:1.5.5")
+
 
     // Coroutines
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
+    implementation ("com.google.android.material:material:1.4.0")
+    implementation ("com.google.android.gms:play-services-location:18.0.0")
 
 
 

@@ -1,0 +1,24 @@
+package tn.esprit.module.repository
+
+import android.content.SharedPreferences
+import retrofit2.Call
+import tn.esprit.module.model.CartridgeResponse
+import tn.esprit.module.Client.RetrofitModule
+import tn.esprit.module.request.Home_api
+
+class CartridgeRepository(private val sharedPreferences: SharedPreferences) {
+
+    private val api: Home_api  = RetrofitModule.getHomeApiService(sharedPreferences)
+
+    fun fetchCartridges(
+        type: String,
+        position: String?,
+        location: String?,
+        latitude: Double?,
+        longitude: Double?,
+        lang: String
+    ): Call<CartridgeResponse> {
+        return api.getCartridges(type, position, location, latitude, longitude, lang)
+
+    }
+}

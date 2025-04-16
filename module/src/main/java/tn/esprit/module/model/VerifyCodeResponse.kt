@@ -1,9 +1,11 @@
+// tn/esprit/module/model/VerifyCodeResponse.kt
 package tn.esprit.module.model
 
 data class VerifyCodeResponse(
     val base_url: String,
     val status: Boolean,
     val message: String,
+    val success: Boolean,
     val data: VerifyCodeData?
 )
 

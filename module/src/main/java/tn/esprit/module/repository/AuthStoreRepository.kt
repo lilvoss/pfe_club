@@ -10,11 +10,17 @@ import tn.esprit.module.request.AuthRequest
 import tn.esprit.module.Client.RetrofitModule
 import tn.esprit.module.model.AuthStoreResponse
 
+// AuthStoreRepository.kt
+
+// AuthStoreRepository.kt
+
 class AuthStoreRepository(private val sharedPreferences: SharedPreferences) {
 
-    fun login(callback: (AuthStoreResponse?) -> Unit) {
+    private val abonnementIdKey = "ABONNEMENT_ID"
+
+    fun login(email: String, password: String, callback: (AuthStoreResponse?) -> Unit) {
         val apiService = RetrofitModule.getApiService(sharedPreferences)
-        val authRequest = AuthRequest(STATIC_EMAIL, STATIC_PASSWORD)
+        val authRequest = AuthRequest(email, password)
         val call = apiService.login(authRequest)
 
         call.enqueue(object : Callback<AuthStoreResponse> {
@@ -24,14 +30,18 @@ class AuthStoreRepository(private val sharedPreferences: SharedPreferences) {
                     if (authResponse != null) {
                         println("✅ API Response Received: $authResponse")
 
+                        // Extraire l'`abonnement_id` du premier abonnement dans la liste
+                        val abonnements = authResponse.data?.subscriptions
+                        if (!abonnements.isNullOrEmpty()) {
+                            val abonnementId = abonnements[0].abonnementId // Extraire l'`abonnement_id`
+                            saveAbonnementId(abonnementId) // Sauvegarder l'`abonnement_id` dans SharedPreferences
+                            println("🔍 Extracted Abonnement ID: $abonnementId")
+                        }
+
+                        // Sauvegarde du token dans SharedPreferences (si nécessaire)
                         val token = authResponse.data?.token?.accessToken ?: ""
-
-                        println("🔍 Extracted Token: $token")
-
                         if (token.isNotEmpty()) {
-                            saveToken(token) // ✅ Save token in SharedPreferences
-                        } else {
-                            println("⚠️ Token is empty or missing!")
+                            saveToken(token)
                         }
                     } else {
                         println("⚠️ API Response is null!")
@@ -49,7 +59,6 @@ class AuthStoreRepository(private val sharedPreferences: SharedPreferences) {
                 callback(null)
             }
         })
-
     }
 
     private fun saveToken(token: String) {
@@ -57,13 +66,20 @@ class AuthStoreRepository(private val sharedPreferences: SharedPreferences) {
             putString("AUTH_TOKEN", token)
             apply()
         }
-        println("✅ Token saved in SharedPreferences: $token") // Debugging log
+        println("✅ Token saved in SharedPreferences: $token")
     }
 
-    companion object {
-        private const val STATIC_EMAIL = "club@auth.com"
-        private const val STATIC_PASSWORD = "auth_club"
+    // Méthode pour sauvegarder l'`abonnementId` dans SharedPreferences
+    private fun saveAbonnementId(abonnementId: Int) {
+        with(sharedPreferences.edit()) {
+            putInt(abonnementIdKey, abonnementId)
+            apply()
+        }
+        println("✅ Abonnement ID saved in SharedPreferences: $abonnementId")
+    }
+
+    // Méthode pour récupérer l'`abonnementId` depuis SharedPreferences
+    fun fetAbonnementId(): Int? {
+        return sharedPreferences.getInt(abonnementIdKey, -1).takeIf { it != -1 }
     }
 }
-
-

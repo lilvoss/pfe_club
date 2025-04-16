@@ -11,8 +11,11 @@ import retrofit2.http.Query
 
 import tn.esprit.module.model.AuthStoreResponse
 import tn.esprit.module.model.AuthUserResponse
+import tn.esprit.module.model.ConfirmSubscribeResponse
 import tn.esprit.module.model.SignUpResponse
 import tn.esprit.module.model.SubscribeResponse
+import tn.esprit.module.model.SubscriptionCodeResponse
+import tn.esprit.module.model.TarifResponse
 import tn.esprit.module.model.VerifyCodeResponse
 import tn.esprit.module.request.AuthRequest
 
@@ -37,7 +40,7 @@ interface AuthApiService {
     @POST("V3.0/verify-login")
     fun verifyLogin(
         @Query("phone") phone: Int,
-        @Query("code") code: Int,
+        @Query("code") code: Int?,
         @Query("client_phone_id") clientPhoneId: String,
         @Query("client_phone_os") clientPhoneOs: Int,
         @Header("lang") lang: String
@@ -58,12 +61,33 @@ interface AuthApiService {
         @Header("lang") lang: String
     ): Call<SignUpResponse>
 
+    @GET("V2.0/subscriptions/")
+    fun getTarifId(@Query("paymentper") paymentPer: String): Call<TarifResponse>
+
 
     @POST("V2.0/request-subscribe")
     fun subscribe(
         @Query("tarif_id") tarifId: Int,
         @Header("lang") lang: String = "fr" // Langue par défaut
     ): Call<SubscribeResponse>
+
+     @POST("V3.0/verify-subscribe")
+     fun verifysub(
+         @Query("code") code: Int,
+         @Query("tarif_id") tarifId: Int,
+         @Header("lang") lang: String
+     ):Call<SubscriptionCodeResponse>
+
+    @POST("V2.0/confirm-subscribe")
+    fun confirmSubscribe(
+        @Query("abonnement_id") abonnementId: Int,
+        @Query("tarif_id") tarifId: Int,
+        @Query("code") code: Int?,
+        @Query("recharge_card") rechargeCard: Int?,
+        @Header("lang") lang: String = "fr" // Langue par défaut
+    ): Call<ConfirmSubscribeResponse>
+
+
 
 
 
