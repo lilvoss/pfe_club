@@ -14,5 +14,10 @@
     </style>
 
 
+    <style name="CircularImage">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item> <!-- Pour une forme circulaire parfaite -->
+    </style>
+
 
 </resources>

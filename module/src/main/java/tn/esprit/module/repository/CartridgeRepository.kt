@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import retrofit2.Call
 import tn.esprit.module.model.CartridgeResponse
 import tn.esprit.module.Client.RetrofitModule
+import tn.esprit.module.model.PartnerResponse
 import tn.esprit.module.request.Home_api
 
 class CartridgeRepository(private val sharedPreferences: SharedPreferences) {
@@ -18,7 +19,19 @@ class CartridgeRepository(private val sharedPreferences: SharedPreferences) {
         longitude: Double?,
         lang: String
     ): Call<CartridgeResponse> {
-        return api.getCartridges(type, position, location, latitude, longitude, lang)
+        return api.getCartridgesBanner(type, position, location, latitude, longitude, lang)
 
     }
+
+    fun fetchPartners(
+        type: String,
+        position: String?,
+        location: String?,
+        latitude: Double?,
+        longitude: Double?,
+        lang: String
+    ): Call<PartnerResponse> {
+        return api.getCartridgesPartner(type, position, location, latitude, longitude, lang)
+    }
+
 }

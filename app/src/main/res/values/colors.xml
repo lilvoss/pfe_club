@@ -6,6 +6,7 @@
     <color name="gris">#656565</color>
     <color name="gris_clair">#D9D9D9</color>
     <color name="grey">#8B819D</color>
+    <color name="red">#FF0000</color>
 
 
 </resources>
